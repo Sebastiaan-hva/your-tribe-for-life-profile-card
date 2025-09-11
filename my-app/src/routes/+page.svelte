@@ -1,9 +1,12 @@
 <script>
+    let { data } = $props();
+    const member = data.member;
     import ProfileCard from "$lib/components/ProfileCard.svelte";
 </script>
 
-<h1>Hallo Hallo</h1>
+<p>Hallo Hallo</p>
 
 <main>
+    <h1>{member.name}</h1>
     <ProfileCard />
 </main>
