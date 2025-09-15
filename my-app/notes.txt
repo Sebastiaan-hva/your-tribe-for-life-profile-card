@@ -1,0 +1,8 @@
+index.js - links van components maken
+export { default as Iets } from './assets/Iets.svelte'
+
+recursive components
+
+svg importen als component inline 
+
+$lib import uit index.js

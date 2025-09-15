@@ -5,7 +5,7 @@
 </script>
 
 <!-- <p>Hallo Hallo</p> -->
-<ProfileCard />
+<ProfileCard {member} />
 
 <main>
     <article style="background-color:{member.fav_color};">
