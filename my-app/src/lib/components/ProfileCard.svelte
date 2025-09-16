@@ -2,16 +2,15 @@
     export let member;
 </script>
 
-<main>
+<div class="container">
     <article style="background-color:{member.fav_color};">
-        <img src={member.avatar} alt="" width="200" height="200" />
+        <img src={member.avatar} alt={member.name} width="200" height="200" />
         <h1>{member.name}</h1>
         <p>{member.bio}</p>
     </article>
-</main>
+</div>
 
 <style>
-    /* Import a fitting, modern font */
     @import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap");
 
     * {
@@ -29,7 +28,7 @@
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
     }
 
-    main {
+    .container {
         display: grid;
         place-items: center;
     }
@@ -48,16 +47,28 @@
             transform 0.5s ease-in-out,
             box-shadow 0.2s ease;
         transform-style: preserve-3d;
-        @media (width < 1350px) {
+    }
+
+    @media (width < 1350px) {
+        article {
             height: 30vw;
         }
-        @media (width < 1050px) {
+    }
+
+    @media (width < 1050px) {
+        article {
             height: 35vw;
         }
-        @media (width < 750px) {
+    }
+
+    @media (width < 750px) {
+        article {
             height: 45vw;
         }
-        @media (width < 550px) {
+    }
+
+    @media (width < 550px) {
+        article {
             height: 50vw;
         }
     }
@@ -73,7 +84,6 @@
         mix-blend-mode: screen;
         opacity: 0;
         transition: opacity 0.5s ease;
-
         background-image: linear-gradient(
             45deg,
             rgba(255, 255, 255, 0.2),
@@ -82,8 +92,6 @@
         );
         background-size: 300% 300%;
         z-index: 0;
-
-        /* The change is here: animation is removed from the base state */
     }
 
     img {
@@ -93,8 +101,10 @@
         width: auto;
         position: relative;
         z-index: 1;
+    }
 
-        @media (width < 550px) {
+    @media (width < 550px) {
+        img {
             height: 50vw;
         }
     }
@@ -113,12 +123,9 @@
     /* Hover effects */
     article:hover:after {
         opacity: 1;
-        /* The animation is now added directly on hover */
         animation: silverShine 2s infinite linear;
-        /* The duration is also shortened for a snappier effect */
     }
 
-    /* New rule to ensure animation resets on mouseout */
     article:not(:hover):after {
         animation: none;
     }
@@ -133,7 +140,6 @@
         transform: scale(1.05) perspective(1000px) rotateX(5deg) rotateY(-5deg);
     }
 
-    /* Keyframe animation */
     @keyframes silverShine {
         0% {
             background-position: -100% 50%;
