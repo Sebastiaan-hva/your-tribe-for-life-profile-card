@@ -1,23 +1,37 @@
 <script>
+    import { onMount } from "svelte";
+
     export let member;
 
     let flyAway = false;
+    let flyBack = false;
     let showSpace = false;
 
     function handleClick() {
         flyAway = true;
         showSpace = true;
 
-        // Reset flyAway after 3s so hover works again
+        if (typeof document !== "undefined") {
+            document.body.classList.add("space"); // keep background permanently
+        }
+
+        // After fly-away, start fly-back
         setTimeout(() => {
             flyAway = false;
+            flyBack = true;
+
+            // After fly-back completes, reset flyBack
+            setTimeout(() => {
+                flyBack = false;
+            }, 3000);
         }, 3000);
     }
 </script>
 
-<div class="container {showSpace ? 'space' : ''}">
+<div class="container">
     <article
         class:fly-away={flyAway}
+        class:fly-back={flyBack}
         style="background-color:{member.fav_color};"
         on:click={handleClick}
     >
@@ -40,29 +54,12 @@
         place-items: center;
         position: relative;
         overflow: hidden;
-        transition: background 2s ease;
         padding: 2em;
-    }
-
-    /* Outer space background */
-    .container.space {
-        background: radial-gradient(ellipse at center, #000 20%, #020024 100%);
-    }
-
-    .container.space::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: transparent
-            url("https://www.transparenttextures.com/patterns/stardust.png")
-            repeat;
-        opacity: 0.6;
-        animation: twinkle 6s linear infinite;
-        z-index: 0;
     }
 
     article {
         aspect-ratio: 17/9;
+        margin-top: 4em;
         height: 20vw;
         display: grid;
         place-items: center;
@@ -75,12 +72,17 @@
             box-shadow 0.2s ease;
         transform-style: preserve-3d;
         cursor: pointer;
-        z-index: 1; /* keep above stars */
+        z-index: 1;
     }
 
     /* Fly-away animation */
     .fly-away {
         animation: flyAway 3s forwards ease-in;
+    }
+
+    /* Fly-back animation */
+    .fly-back {
+        animation: flyBack 3s forwards ease-out;
     }
 
     @keyframes flyAway {
@@ -97,12 +99,18 @@
         }
     }
 
-    @keyframes twinkle {
-        from {
-            background-position: 0 0;
+    @keyframes flyBack {
+        0% {
+            transform: scale(0.5) translate(600px, -1200px) rotate(45deg);
+            opacity: 0;
         }
-        to {
-            background-position: 200% 200%;
+        30% {
+            transform: scale(1.2) translate(50px, -100px) rotate(10deg);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1) translate(0, 0) rotate(0);
+            opacity: 1;
         }
     }
 
@@ -132,36 +140,7 @@
         z-index: 2;
     }
 
-    /* Responsiveness */
-    @media (width < 1350px) {
-        article {
-            height: 30vw;
-        }
-    }
-
-    @media (width < 1050px) {
-        article {
-            height: 35vw;
-        }
-    }
-
-    @media (width < 750px) {
-        article {
-            height: 45vw;
-        }
-    }
-
-    @media (width < 550px) {
-        article {
-            height: 50vw;
-        }
-
-        img {
-            height: 50vw;
-        }
-    }
-
-    /* Hover shine effect (fixed z-index issue) */
+    /* Hover shine effect */
     article:after {
         content: "";
         position: absolute;
@@ -176,12 +155,13 @@
         opacity: 0;
         transition: opacity 0.5s ease;
         mix-blend-mode: screen;
-        z-index: 3; /* now above everything else */
+        z-index: 3;
     }
 
     article:hover:after {
         opacity: 1;
-        animation: silverShine 2s infinite linear;
+        animation: silverShine 2s linear 2;
+        /* animation: silverShine 2s linear infinite; either version is ok */
     }
 
     article:hover h1,
@@ -200,6 +180,31 @@
         }
         100% {
             background-position: 200% 50%;
+        }
+    }
+
+    /* Responsive sizes */
+    @media (width < 1350px) {
+        article {
+            height: 30vw;
+        }
+    }
+    @media (width < 1050px) {
+        article {
+            height: 35vw;
+        }
+    }
+    @media (width < 750px) {
+        article {
+            height: 45vw;
+        }
+    }
+    @media (width < 550px) {
+        article {
+            height: 50vw;
+        }
+        img {
+            height: 50vw;
         }
     }
 </style>

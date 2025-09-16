@@ -1,11 +1,43 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	%sveltekit.head%
+
+	<style>
+		body.space {
+			background: radial-gradient(ellipse at center, #000 20%, #020024 100%);
+			background-size: cover;
+			transition: background 2s ease;
+		}
+
+		body.space::before {
+			content: "";
+			position: fixed;
+			inset: 0;
+			background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+			opacity: 0.6;
+			animation: twinkle 6s linear infinite;
+			pointer-events: none;
+			z-index: -1;
+		}
+
+		@keyframes twinkle {
+			from {
+				background-position: 0 0;
+			}
+
+			to {
+				background-position: 200% 200%;
+			}
+		}
+	</style>
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents">%sveltekit.body%</div>
+</body>
+
 </html>

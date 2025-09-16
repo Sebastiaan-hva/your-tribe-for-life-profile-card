@@ -1,7 +1,5 @@
 <script>
 	import favicon from "$lib/assets/favicon.svg";
-
-	let { children } = $props();
 </script>
 
 <svelte:head>
@@ -9,5 +7,5 @@
 </svelte:head>
 
 <main>
-	{@render children?.()}
+	<slot />
 </main>
