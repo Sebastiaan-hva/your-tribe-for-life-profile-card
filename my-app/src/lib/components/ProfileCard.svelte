@@ -1,10 +1,27 @@
 <script>
     export let member;
+
+    let flyAway = false;
+    let showSpace = false;
+
+    function handleClick() {
+        flyAway = true;
+        showSpace = true;
+
+        // Reset flyAway after 3s so hover works again
+        setTimeout(() => {
+            flyAway = false;
+        }, 3000);
+    }
 </script>
 
-<div class="container">
-    <article style="background-color:{member.fav_color};">
-        <img src={member.avatar} alt={member.name} width="200" height="200" />
+<div class="container {showSpace ? 'space' : ''}">
+    <article
+        class:fly-away={flyAway}
+        style="background-color:{member.fav_color};"
+        on:click={handleClick}
+    >
+        <img src={member.avatar} alt={member.name} />
         <h1>{member.name}</h1>
         <p>{member.bio}</p>
     </article>
@@ -18,23 +35,33 @@
         font-family: "Roboto Slab", serif;
     }
 
-    h1 {
-        font-size: clamp(1.3em, 1.5em, 2em);
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-    }
-
-    p {
-        font-size: clamp(1.1em, 1.3em, 2em);
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-    }
-
     .container {
         display: grid;
         place-items: center;
+        position: relative;
+        overflow: hidden;
+        transition: background 2s ease;
+        padding: 2em;
+    }
+
+    /* Outer space background */
+    .container.space {
+        background: radial-gradient(ellipse at center, #000 20%, #020024 100%);
+    }
+
+    .container.space::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: transparent
+            url("https://www.transparenttextures.com/patterns/stardust.png")
+            repeat;
+        opacity: 0.6;
+        animation: twinkle 6s linear infinite;
+        z-index: 0;
     }
 
     article {
-        margin-top: 2em;
         aspect-ratio: 17/9;
         height: 20vw;
         display: grid;
@@ -47,8 +74,65 @@
             transform 0.5s ease-in-out,
             box-shadow 0.2s ease;
         transform-style: preserve-3d;
+        cursor: pointer;
+        z-index: 1; /* keep above stars */
     }
 
+    /* Fly-away animation */
+    .fly-away {
+        animation: flyAway 3s forwards ease-in;
+    }
+
+    @keyframes flyAway {
+        0% {
+            transform: scale(1) translate(0, 0) rotate(0);
+            opacity: 1;
+        }
+        30% {
+            transform: scale(1.2) translate(50px, -100px) rotate(10deg);
+        }
+        100% {
+            transform: scale(0.5) translate(600px, -1200px) rotate(45deg);
+            opacity: 0;
+        }
+    }
+
+    @keyframes twinkle {
+        from {
+            background-position: 0 0;
+        }
+        to {
+            background-position: 200% 200%;
+        }
+    }
+
+    h1 {
+        font-size: clamp(1.3em, 1.5em, 2em);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        grid-row: 1/2;
+        grid-column: 2/3;
+        align-self: end;
+        z-index: 2;
+    }
+
+    p {
+        font-size: clamp(1.1em, 1.3em, 2em);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        grid-row: 2/3;
+        grid-column: 2/3;
+        z-index: 2;
+    }
+
+    img {
+        grid-row: 1/3;
+        grid-column: 1/2;
+        height: 100%;
+        width: auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Responsiveness */
     @media (width < 1350px) {
         article {
             height: 30vw;
@@ -71,63 +155,33 @@
         article {
             height: 50vw;
         }
+
+        img {
+            height: 50vw;
+        }
     }
 
+    /* Hover shine effect (fixed z-index issue) */
     article:after {
         content: "";
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-repeat: no-repeat;
-        mix-blend-mode: screen;
-        opacity: 0;
-        transition: opacity 0.5s ease;
-        background-image: linear-gradient(
+        inset: 0;
+        background: linear-gradient(
             45deg,
             rgba(255, 255, 255, 0.2),
             rgba(255, 255, 255, 0.8),
             rgba(255, 255, 255, 0.2)
         );
         background-size: 300% 300%;
-        z-index: 0;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        mix-blend-mode: screen;
+        z-index: 3; /* now above everything else */
     }
 
-    img {
-        grid-row: 1/3;
-        grid-column: 1/2;
-        height: 100%;
-        width: auto;
-        position: relative;
-        z-index: 1;
-    }
-
-    @media (width < 550px) {
-        img {
-            height: 50vw;
-        }
-    }
-
-    h1 {
-        grid-row: 1/2;
-        grid-column: 2/3;
-        align-self: end;
-    }
-
-    p {
-        grid-row: 2/3;
-        grid-column: 2/3;
-    }
-
-    /* Hover effects */
     article:hover:after {
         opacity: 1;
         animation: silverShine 2s infinite linear;
-    }
-
-    article:not(:hover):after {
-        animation: none;
     }
 
     article:hover h1,
